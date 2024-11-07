@@ -29,8 +29,6 @@ jobs:
         with:      
           repo: "./source"   
 ```
-Un exemple pour publier une release sur le repo "ansforge/IG-website-release" dans les ig/fhir
-
 
 ### Inputs
 
