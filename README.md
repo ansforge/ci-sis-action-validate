@@ -36,7 +36,7 @@ Un exemple pour publier une release sur le repo "ansforge/IG-website-release" da
 
 | name               | value   | default               | description                                                                                                                                                                                                                                                                                                     |
 |--------------------|---------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ig-publisher-version       | string  |latest  | Version de l'ig publisher : format : 'x.y.z' |
+| repo    | string  |latest  | Nom du répertoire à analyser|
 
 
 
