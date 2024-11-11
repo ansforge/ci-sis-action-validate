@@ -17,7 +17,9 @@ runs:
         shell: bash   
         run : pip install --upgrade pip
 
-
+      - name: Pip hl7apy
+        shell: bash   
+        run : pip install hl7apy
 
       - name: Install requests
         shell: bash   
