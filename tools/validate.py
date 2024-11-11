@@ -34,7 +34,7 @@ url = 'https://interop.esante.gouv.fr/evs/rest/validations'
 
 #Function de validation
 def validate(fileName, validationServiceName, validationserviceValidator):
-    time.sleep(10)
+    time.sleep(5)
     #Recuperation du contenu du fichier 
     with open(fileName, mode="rb") as validate_file:
         contents = validate_file.read()
@@ -152,7 +152,7 @@ def findValidateur (FileInput):
 
             if '2.11~IHE_FRANCE-2.11-PAM'  in strInputFile :
                     validationValidator = "2.16.840.1.113883.2.8.3.1.1"
-    if ((validationService == "") and (validationValidator == "")) :
+    if ((validationService == "") or (validationValidator == "")) :
          raise NoValidateurException
     return validationService, validationValidator
   
