@@ -6,7 +6,6 @@ import os
 import sys
 import glob 
 import time
-import hl7
 from hl7apy.parser import parse_message
 
 class NoValidateurException(Exception):
