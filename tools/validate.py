@@ -108,17 +108,17 @@ def findValidateur (FileInput):
             validationValidator = "DICOM Standard Conformance"
 
         # ************************ METADATA*********************************************        
-        if 'METADATA.XML' in FileInput :
+        elif 'METADATA.XML' in FileInput :
             validationService = "Model-based XDS Validator"
             validationValidator = "ASIP XDM ITI-32 FR Distribute Document Set on Media"
 
         # ************************ CDA *********************************************        
-        if '<ClinicalDocument' in strInputFile :
+        elif '<ClinicalDocument' in strInputFile :
             validationService = "Schematron Based CDA Validator"
             validationValidator = ".Structuration minimale des documents de santé v1.16"
 
         # ************************ HL7V2*********************************************
-        if 'MSH|' in strInputFile :
+        elif 'MSH|' in strInputFile :
             parsed_message = parse_message(strInputFile)
             print(parsed_message)
      
@@ -135,7 +135,7 @@ def findValidateur (FileInput):
                 if 'MDM^T10^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.21"
         
-            if '1.1^CISIS_CDA_HL7_LPS'  in strInputFile :
+            elif '1.1^CISIS_CDA_HL7_LPS'  in strInputFile :
                 if 'MDM^T02^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.20"
                 if 'MDM^T04^MDM_T02' in strInputFile :
@@ -143,14 +143,14 @@ def findValidateur (FileInput):
                 if 'MDM^T10^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.23"
 
-            if 'ACK^'  in strInputFile :
+            elif 'ACK^'  in strInputFile :
                 if '2.6' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.27"
                 if '2.5' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.26"
 
 
-            if '2.11~IHE_FRANCE-2.11-PAM'  in strInputFile :
+            elif '2.11~IHE_FRANCE-2.11-PAM'  in strInputFile :
                     validationValidator = "2.16.840.1.113883.2.8.3.1.1"
     if ((validationService == "") or (validationValidator == "")) :
          raise NoValidateurException
