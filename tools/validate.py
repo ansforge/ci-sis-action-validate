@@ -34,7 +34,7 @@ url = 'https://interop.esante.gouv.fr/evs/rest/validations'
 
 #Function de validation
 def validate(fileName, validationServiceName, validationserviceValidator):
-    time.sleep(10)
+    time.sleep(7)
     #Recuperation du contenu du fichier 
     with open(fileName, mode="rb") as validate_file:
         contents = validate_file.read()
