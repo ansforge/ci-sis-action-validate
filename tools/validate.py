@@ -64,6 +64,7 @@ def validate(fileName, validationServiceName, validationserviceValidator):
         res =  requests.post(url, data=validate_data, headers=headers)
         locationRapport = (res.headers["X-Validation-Report-Redirect"])
     except Exception as e:   
+        print (res)
         print(e)  
         raise ValidateException
     return locationRapport
