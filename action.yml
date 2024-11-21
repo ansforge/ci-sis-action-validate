@@ -4,6 +4,10 @@ inputs:
   repo:
     description: "Chemin d'accés au repertoire des exemples"
     required: true
+  except:
+    description: "Répertoires à éviter"
+    required: false
+    default: Not Specified
 runs:
   using: "composite"
   steps:
