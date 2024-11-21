@@ -163,7 +163,7 @@ print("source : " +dir_path_exemple)
 print("output : " +     file_output)    
 print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>validateur</th> <th>Nombre d'erreur</th> <th>Nombre de warning</th> <th>Temps</th> <th>Nombre de contrainte</th> </tr>" ,file=open(file_output, "a"))    
 
-for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
+for p in glob.iglob(dir_path_exemple+'/**[!^Images DICOM]/*.*', recursive=True):
     if(os.path.isfile(p)):
         try:     
             print ("" + p ) 
