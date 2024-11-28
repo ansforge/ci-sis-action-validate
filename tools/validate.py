@@ -28,6 +28,7 @@ github_action_path = sys.argv[1]
 dir_path_exemple =  sys.argv[2] 
 file_output = sys.argv[3] 
 dir_path_exception = sys.argv[4] 
+severityThreshold = sys.argv[5] 
 
 #URL d'accés à l'API de gazelle
 url = 'https://interop.esante.gouv.fr/evs/rest/validations'
@@ -74,7 +75,7 @@ def validate(fileName, validationServiceName, validationserviceValidator):
 def getReport(location_report):
     try:
         headers = {'accept': 'application/xml'}
-        request =  requests.get(f"{location_report}?severityThreshold=WARNING", headers=headers)
+        request =  requests.get(f"{location_report}?severityThreshold={severityThreshold}", headers=headers)
     except Exception as e:   
         print(e)  
         raise GetReportException    
