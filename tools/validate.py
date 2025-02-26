@@ -165,6 +165,7 @@ print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>validateur</th> <th>Nombre
 
 for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
     if(os.path.isfile(p)):
+        locationRepport = "" 
         try:     
             print ("" + p ) 
             validationService,  validationValidator = findValidateur(p)
@@ -180,17 +181,17 @@ for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
             print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
             print("- Pas validateur")  
         except ValidateException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+            print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
             print("- Erreur à la validation")            
         except GetReportException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+            print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
             print("- Erreur à la récuperation du rapport")          
         except TransformReportException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+            print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
             print("- Erreur à la transformation  du rapport")          
         except Exception as e:
             print(e)
-            print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+            print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
             print("- Erreur   : " + p)     
 
 
