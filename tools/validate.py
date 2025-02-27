@@ -168,7 +168,7 @@ print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>validateur</th> <th>Nombre
 for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
     if (dir_path_exception == 'Not Specified') or (dir_path_exception not in p ) :
         if(os.path.isfile(p)):
-            if( '.md' not in FileInput.lower() ) :
+            if( '.md' not in p.lower() ) :
                 locationRepport = "" 
                 try:     
                     print ("" + p ) 
