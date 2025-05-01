@@ -165,7 +165,7 @@ def findValidateur (FileInput):
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.69"
 
 
-            elif '2.11^IHE_FRANCE-2.11-PAM'  in strInputFile :
+            elif '2.11-PAM'  in strInputFile :
                     validationValidator = "2.16.840.1.113883.2.8.3.1.1"
     if ((validationService == "") or (validationValidator == "")) :
          raise NoValidateurException
