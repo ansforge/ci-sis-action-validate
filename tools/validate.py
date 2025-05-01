@@ -6,6 +6,8 @@ import os
 import sys
 import glob 
 import time
+import json
+
 from hl7apy.parser import parse_message
 
 class NoValidateurException(Exception):
@@ -27,14 +29,14 @@ class TransformReportException(Exception):
 github_action_path = sys.argv[1] 
 dir_path_exemple =  sys.argv[2] 
 file_output = sys.argv[3] 
-
+apikey = sys.argv[4]
 #URL d'accés à l'API de gazelle
 url = 'https://interop.esante.gouv.fr/evs/rest/validations'
-
+#url = 'https://interop-pprod.esante.gouv.fr/evs/rest/validations'
 
 #Function de validation
-def validate(fileName, validationServiceName, validationserviceValidator):
-    time.sleep(13)
+def validate(fileName, validationServiceName, validationserviceValidator, apikey):
+    #time.sleep(13)
     #Recuperation du contenu du fichier 
     with open(fileName, mode="rb") as validate_file:
         contents = validate_file.read()
@@ -58,9 +60,10 @@ def validate(fileName, validationServiceName, validationserviceValidator):
     tree = ET.ElementTree(validation)
     validate_data = ET.tostring(validation)
 
+    #print(validate_data)
     #Appel de la validation
     try:
-        headers = {'Content-Type': 'application/xml'}
+        headers = {'Content-Type': 'application/xml', 'Authorization' : 'GazelleAPIKey '+ apikey}
         res =  requests.post(url, data=validate_data, headers=headers)
         locationRapport = (res.headers["X-Validation-Report-Redirect"])
     except Exception as e:   
@@ -70,10 +73,11 @@ def validate(fileName, validationServiceName, validationserviceValidator):
     return locationRapport
 
 #Fonction de récupération du rapport de validation
-def getReport(location_report):
+def getReport(location_report, apikey) :
     try:
-        headers = {'accept': 'application/xml'}
+        headers = {'accept': 'application/xml', 'Authorization' : 'GazelleAPIKey '+ apikey}
         request =  requests.get(f"{location_report}?severityThreshold=WARNING", headers=headers)
+        print (request)
     except Exception as e:   
         print(e)  
         raise GetReportException    
@@ -125,33 +129,43 @@ def findValidateur (FileInput):
      
 
             validationService = "Gazelle HL7v2.x validator"
+           # validationService = "HL7v2 Validation service"
             
             if '2.1^CISIS_CDA_HL7_V2'  in strInputFile :
                 if 'ORU^R01^ORU_R01' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.19"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.61"
                 if 'MDM^T02^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.24"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.19"
                 if 'MDM^T04^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.25"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.58"
                 if 'MDM^T10^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.21"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.60"
         
             elif '1.1^CISIS_CDA_HL7_LPS'  in strInputFile :
                 if 'MDM^T02^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.20"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.65"
                 if 'MDM^T04^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.22"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.66"
                 if 'MDM^T10^MDM_T02' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.23"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.67"
 
             elif 'ACK^'  in strInputFile :
                 if '2.6' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.27"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.77"
                 if '2.5' in strInputFile :
                     validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.26"
+                    #validationValidator = "2.16.840.1.113883.2.8.3.1.69"
 
 
-            elif '2.11~IHE_FRANCE-2.11-PAM'  in strInputFile :
+            elif '2.11^IHE_FRANCE-2.11-PAM'  in strInputFile :
                     validationValidator = "2.16.840.1.113883.2.8.3.1.1"
     if ((validationService == "") or (validationValidator == "")) :
          raise NoValidateurException
@@ -161,7 +175,7 @@ def findValidateur (FileInput):
 
 print("source : " +dir_path_exemple)
 print("output : " +     file_output)    
-print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>validateur</th> <th>Nombre d'erreur</th> <th>Nombre de warning</th> <th>Temps</th> <th>Nombre de contrainte</th> </tr>" ,file=open(file_output, "a"))    
+print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>Nombre d'erreur</th> <th>Nombre de warning</th> <th>Temps</th> <th>Nombre de contrainte</th> <th>validateur</th> </tr>" ,file=open(file_output, "a"))    
 
 for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
     if(os.path.isfile(p)):
@@ -171,10 +185,12 @@ for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
             validationService,  validationValidator = findValidateur(p)
             print("- Validation : " + validationService + " :" +  validationValidator)            
             start_time = time.time()
-            locationRepport = validate(p, validationService, validationValidator)
+            locationRepport = validate(p, validationService, validationValidator,apikey)
             end_time = time.time()
             timeValidation = str(end_time - start_time)
-            rapport = getReport(locationRepport)
+            print("rapport")
+            rapport = getReport(locationRepport,apikey)
+            print("fin rapport")
             transformReport(rapport, github_action_path, file_output, p, timeValidation)
             print("- Location report "  + locationRepport)
         except NoValidateurException as e:

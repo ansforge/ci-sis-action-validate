@@ -15,56 +15,58 @@ xmlns="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements/1.1/"
             <xsl:choose>
               <xsl:when test="@result='PASSED'">
                 <tr>
-                  <td>
+                  <td style="vertical-align:top">
                     <xsl:value-of select="$nameFile" />
                   </td> 
-                  <td>:white_check_mark:
+                  <td style="vertical-align:top"> 
                     <xsl:value-of select="@result" />
                   </td>
-                  <td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfErrors" />
+                  </td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfWarnings" />
+                  </td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="$elapsedTime"/>
+                  </td>	
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfConstraints"/>
+                  </td>                  
+                  <td style="vertical-align:top">
                     <xsl:value-of select="/gvr:validationReport/gvr:validationOverview/gvr:validationServiceName" />-
                     <xsl:value-of select="/gvr:validationReport/gvr:validationOverview/gvr:validatorID" />
                     <xsl:apply-templates />
                   </td>
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfErrors" />
-                  </td>
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfWarnings" />
-                  </td>
-                  <td>
-                    <xsl:value-of select="$elapsedTime"/>
-                  </td>	
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfConstraints"/>
-                  </td>
+
                 </tr>
               </xsl:when>
               <xsl:otherwise>
                 <tr>
-                  <td>
+                  <td style="vertical-align:top">
                     <xsl:value-of select="$nameFile" />
                   </td> 
-                  <td>:heavy_exclamation_mark: 
+                  <td style="vertical-align:top">
                     <xsl:value-of select="@result" />
                   </td>
-                  <td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfErrors" />
+                  </td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfWarnings" />
+                  </td>
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="$elapsedTime"/>
+                  </td>	
+                  <td style="vertical-align:top">
+                    <xsl:value-of select="//gvr:counters/@numberOfConstraints"/>
+                  </td>                  
+                  <td style="vertical-align:top">
                     <xsl:value-of select="/gvr:validationReport/gvr:validationOverview/gvr:validationServiceName" />-
                     <xsl:value-of select="/gvr:validationReport/gvr:validationOverview/gvr:validatorID" />
                     <xsl:apply-templates />
                   </td>
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfErrors" />
-                  </td>
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfWarnings" />
-                  </td>
-                  <td>
-                    <xsl:value-of select="$elapsedTime"/>
-                  </td>	
-                  <td>
-                    <xsl:value-of select="//gvr:counters/@numberOfConstraints"/>
-                  </td>
+
                 </tr>
               </xsl:otherwise>
             </xsl:choose>  
@@ -74,17 +76,16 @@ xmlns="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements/1.1/"
   
   <xsl:template match="gvr:subReport">
     <xsl:if test="count(./gvr:constraint) &gt; 0">
-      <details>
-        <summary>  
+
+
           <h4>
             Details   (
             <xsl:value-of select="@subReportResult" />)   
-          </h4>
-        </summary>		  
-        <table class="table table-striped table-hover">
+          </h4>	  
+        <table class="">
           <xsl:apply-templates />
         </table>
-      </details>	  
+ 
     </xsl:if>    
   </xsl:template>
   
