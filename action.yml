@@ -7,6 +7,13 @@ inputs:
   apiKey:
     description: "Cle API Gazelle"
     required: true    
+  except:
+    description: "Répertoires à éviter"
+    default: Not Specified
+  severityThreshold:
+    description: "Seuil de filtrage des détails du rapport en fonction de la sévérité des tests"
+    default: WARNING
+    
 runs:
   using: "composite"
   steps:
@@ -43,7 +50,7 @@ runs:
         shell: bash   
         continue-on-error: true
         run : |
-              python ${{ github.action_path }}/tools/validate.py '${{ github.action_path }}' '${{ inputs.repo}}' './rapport.html' '${{ inputs.apiKey}}' 
+              python ${{ github.action_path }}/tools/validate.py '${{ github.action_path }}' '${{ inputs.repo}}' './rapport.html' '${{ inputs.apiKey}}' ${{ inputs.except}}' '${{ inputs.severityThreshold}}'
               echo "# Rapport de validation sur les exemples" >> $GITHUB_STEP_SUMMARY
               cat ./rapport.html  | tr -d "\n\t" >> $GITHUB_STEP_SUMMARY
 
