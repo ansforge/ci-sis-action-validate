@@ -40,7 +40,7 @@ jobs:
 |--------------------|---------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | repo    | string  |  | Nom du répertoire à analyser|
 | apiKey  | string  |  |Cle API de Gazelle|
-
-
+| except  | string  |  |Répertoires à éviter|
+| severityThreshold  | string  | WARNING |Seuil de filtrage des détails du rapport en fonction de la sévérité des test|
 
 
