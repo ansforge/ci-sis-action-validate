@@ -30,6 +30,9 @@ github_action_path = sys.argv[1]
 dir_path_exemple =  sys.argv[2] 
 file_output = sys.argv[3] 
 apikey = sys.argv[4]
+dir_path_exception = sys.argv[5] 
+severityThreshold = sys.argv[6] 
+
 #URL d'accés à l'API de gazelle
 url = 'https://interop.esante.gouv.fr/evs/rest/validations'
 #url = 'https://interop-pprod.esante.gouv.fr/evs/rest/validations'
@@ -76,7 +79,7 @@ def validate(fileName, validationServiceName, validationserviceValidator, apikey
 def getReport(location_report, apikey) :
     try:
         headers = {'accept': 'application/xml', 'Authorization' : 'GazelleAPIKey '+ apikey}
-        request =  requests.get(f"{location_report}?severityThreshold=WARNING", headers=headers)
+        request =  requests.get(f"{location_report}?severityThreshold={severityThreshold}", headers=headers)
         print (request)
     except Exception as e:   
         print(e)  
@@ -178,37 +181,38 @@ print("output : " +     file_output)
 print("<table><tr> <th>Fichier</th> <th>Etat</th> <th>Nombre d'erreur</th> <th>Nombre de warning</th> <th>Temps</th> <th>Nombre de contrainte</th> <th>validateur</th> </tr>" ,file=open(file_output, "a"))    
 
 for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
-    if(os.path.isfile(p)):
-        locationRepport = "" 
-        try:     
-            print ("" + p ) 
-            validationService,  validationValidator = findValidateur(p)
-            print("- Validation : " + validationService + " :" +  validationValidator)            
-            start_time = time.time()
-            locationRepport = validate(p, validationService, validationValidator,apikey)
-            end_time = time.time()
-            timeValidation = str(end_time - start_time)
-            print("rapport")
-            rapport = getReport(locationRepport,apikey)
-            print("fin rapport")
-            transformReport(rapport, github_action_path, file_output, p, timeValidation)
-            print("- Location report "  + locationRepport)
-        except NoValidateurException as e:
-            print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
-            print("- Pas validateur")  
-        except ValidateException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
-            print("- Erreur à la validation")            
-        except GetReportException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
-            print("- Erreur à la récuperation du rapport")          
-        except TransformReportException as e:
-            print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
-            print("- Erreur à la transformation  du rapport")          
-        except Exception as e:
-            print(e)
-            print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
-            print("- Erreur   : " + p)     
+    if (dir_path_exception == 'Not Specified') or (dir_path_exception not in p ) :
+        if(os.path.isfile(p)):
+            locationRepport = "" 
+            try:     
+                print ("" + p ) 
+                validationService,  validationValidator = findValidateur(p)
+                print("- Validation : " + validationService + " :" +  validationValidator)            
+                start_time = time.time()
+                locationRepport = validate(p, validationService, validationValidator,apikey)
+                end_time = time.time()
+                timeValidation = str(end_time - start_time)
+                print("rapport")
+                rapport = getReport(locationRepport,apikey)
+                print("fin rapport")
+                transformReport(rapport, github_action_path, file_output, p, timeValidation)
+                print("- Location report "  + locationRepport)
+            except NoValidateurException as e:
+                print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("- Pas validateur")  
+            except ValidateException as e:
+                print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("- Erreur à la validation")            
+            except GetReportException as e:
+                print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("- Erreur à la récuperation du rapport")          
+            except TransformReportException as e:
+                print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("- Erreur à la transformation  du rapport")          
+            except Exception as e:
+                print(e)
+                print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("- Erreur   : " + p)     
 
 
             
