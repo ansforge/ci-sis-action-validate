@@ -5,7 +5,8 @@
 GitHub Action pour les valider les exemples du CI-CIS : 
   - Rapport de validation dans l'action
 
-
+La cle API de gazelle est accéssible via ce lien : 
+- https://interop.esante.gouv.fr/evs/administration/apiKeyManagement.seam
 ## Usage
 
 ### Exemple Workflow file
@@ -27,7 +28,10 @@ jobs:
           path: source
       - uses: ansforge/ci-sis-action-validate@main
         with:      
-          repo: "./source"   
+          repo: "./source"
+          apiKey:
+            description: "Cle API Gazelle"
+            required: true    
 ```
 
 ### Inputs
