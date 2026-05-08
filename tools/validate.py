@@ -38,10 +38,10 @@ url = 'https://interop.esante.gouv.fr/evs/rest/validations'
 #url = 'https://interop-pprod.esante.gouv.fr/evs/rest/validations'
 
 #Function de validation
-def validate(fileName, validationServiceName, validationserviceValidator, apikey):
+def validate(file_name, validation_service_name, validation_service_validator, apikey):
     time.sleep(13)
     #Recuperation du contenu du fichier 
-    with open(fileName, mode="rb") as validate_file:
+    with open(file_name, mode="rb") as validate_file:
         contents = validate_file.read()
     docbase64  = base64.b64encode(bytes(contents)).decode('ascii')    
 
@@ -51,15 +51,15 @@ def validate(fileName, validationServiceName, validationserviceValidator, apikey
    
     validationService = ET.SubElement(validation, 'validationService')
     validationService.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
-    validationService.set("name", validationServiceName )
-    validationService.set("validator", validationserviceValidator)
+    validationService.set("name", validation_service_name )
+    validationService.set("validator", validation_service_validator)
 
     validationObject = ET.SubElement(validation, 'object')
     validationObject.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
-    validationObject.set("originalFileName", fileName)
+    validationObject.set("originalFileName", file_name)
 
-    validationContent = ET.SubElement(validationObject, 'content')
-    validationContent.text = str(docbase64)
+    validation_content = ET.SubElement(validationObject, 'content')
+    validation_content.text = str(docbase64)
     tree = ET.ElementTree(validation)
     validate_data = ET.tostring(validation)
 
@@ -68,12 +68,12 @@ def validate(fileName, validationServiceName, validationserviceValidator, apikey
     try:
         headers = {'Content-Type': 'application/xml', 'Authorization' : 'GazelleAPIKey '+ apikey}
         res =  requests.post(url, data=validate_data, headers=headers)
-        locationRapport = (res.headers["X-Validation-Report-Redirect"])
+        location_rapport = (res.headers["X-Validation-Report-Redirect"])
     except Exception as e:   
         print (res)
         print(e)  
         raise ValidateException
-    return locationRapport
+    return location_rapport
 
 #Fonction de récupération du rapport de validation
 def getReport(location_report, apikey) :
@@ -198,20 +198,20 @@ for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
                 transformReport(rapport, github_action_path, file_output, p, timeValidation)
                 print("- Location report "  + locationRepport)
             except NoValidateurException as e:
-                print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Pas validateur")  
             except ValidateException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la validation")            
             except GetReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la récuperation du rapport")          
             except TransformReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la transformation  du rapport")          
             except Exception as e:
                 print(e)
-                print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur   : " + p)     
 
 
