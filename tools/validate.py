@@ -49,18 +49,17 @@ def validate(fileName, validationServiceName, validationserviceValidator, apikey
     validation = ET.Element('validation')
     validation.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
    
-    validationService = ET.SubElement(validation, 'validationService')
-    validationService.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
-    validationService.set("name", validationServiceName )
-    validationService.set("validator", validationserviceValidator)
+    validation_service = ET.SubElement(validation, 'validationService')
+    validation_service.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
+    validation_service.set("name", validationServiceName )
+    validation_service.set("validator", validationserviceValidator)
 
-    validationObject = ET.SubElement(validation, 'object')
-    validationObject.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
-    validationObject.set("originalFileName", fileName)
+    validation_object = ET.SubElement(validation, 'object')
+    validation_object.set("xmlns", "http://evsobjects.gazelle.ihe.net/")
+    validation_object.set("originalFileName", fileName)
 
-    validationContent = ET.SubElement(validationObject, 'content')
+    validationContent = ET.SubElement(validation_object, 'content')
     validationContent.text = str(docbase64)
-    tree = ET.ElementTree(validation)
     validate_data = ET.tostring(validation)
 
     #print(validate_data)
@@ -87,7 +86,7 @@ def getReport(location_report, apikey) :
     return request
 
 #Fonction de transdormation du rapport de validation
-def transformReport(rapport, github_action_path, file_output,nameFile, time):
+def transformReport(rapport, github_action_path, file_output, name_file, time):
     try:   
         from lxml import etree
         parser = etree.ETCompatXMLParser()
@@ -96,8 +95,8 @@ def transformReport(rapport, github_action_path, file_output,nameFile, time):
         dom = etree.fromstring(rapport.content, parser)
 
         transform = etree.XSLT(xsl)
-        resultHtml= transform(dom,nameFile=etree.XSLT.strparam(nameFile),elapsedTime=etree.XSLT.strparam(time))
-        print(resultHtml,file=open(file_output, "a"))
+        result_html = transform(dom,nameFile=etree.XSLT.strparam(name_file),elapsedTime=etree.XSLT.strparam(time))
+        print(result_html,file=open(file_output, "a"))
     except Exception as e:   
         print(e)  
         raise TransformReportException    
@@ -198,20 +197,20 @@ for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
                 transformReport(rapport, github_action_path, file_output, p, timeValidation)
                 print("- Location report "  + locationRepport)
             except NoValidateurException as e:
-                print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Pas validateur")  
             except ValidateException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la validation")            
             except GetReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la récuperation du rapport")          
             except TransformReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la transformation  du rapport")          
             except Exception as e:
                 print(e)
-                print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur   : " + p)     
 
 
