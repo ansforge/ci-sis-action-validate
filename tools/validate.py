@@ -103,76 +103,76 @@ def transformReport(rapport, github_action_path, file_output,nameFile, time):
         raise TransformReportException    
     
 #Fonction qui permet de récuperer les validateurs
-def findValidateur (FileInput):
-    validationService = ""
-    validationValidator = ""    
-    with open(FileInput, errors='ignore') as fileIn:
-        strInputFile = fileIn.read()    
+def findValidateur (file_input):
+    validation_service = ""
+    validation_validator = ""    
+    with open(file_input, errors='ignore') as fileIn:
+        str_input_file = fileIn.read()    
 
 
         # ************************ DICOM*********************************************        
-        if '.dcm' in FileInput.lower()  :
-            validationService = "Dicom3tools"
-            validationValidator = "DICOM Standard Conformance"
+        if '.dcm' in file_input.lower()  :
+            validation_service = "Dicom3tools"
+            validation_validator = "DICOM Standard Conformance"
 
         # ************************ METADATA*********************************************        
-        elif 'METADATA.XML' in FileInput :
-            validationService = "Model-based XDS Validator"
-            validationValidator = "ASIP XDM ITI-32 FR Distribute Document Set on Media"
+        elif 'METADATA.XML' in file_input :
+            validation_service = "Model-based XDS Validator"
+            validation_validator = "ASIP XDM ITI-32 FR Distribute Document Set on Media"
 
         # ************************ CDA *********************************************        
-        elif '<ClinicalDocument' in strInputFile :
-            validationService = "Schematron Based CDA Validator"
-            validationValidator = ".Structuration minimale des documents de santé v1.16"
+        elif '<ClinicalDocument' in str_input_file :
+            validation_service = "Schematron Based CDA Validator"
+            validation_validator = ".Structuration minimale des documents de santé v1.16"
 
         # ************************ HL7V2*********************************************
-        elif 'MSH|' in strInputFile :
-            parsed_message = parse_message(strInputFile)
+        elif 'MSH|' in str_input_file :
+            parsed_message = parse_message(str_input_file)
             print(parsed_message)
      
 
-            validationService = "Gazelle HL7v2.x validator"
+            validation_service = "Gazelle HL7v2.x validator"
            # validationService = "HL7v2 Validation service"
             
-            if '2.1^CISIS_CDA_HL7_V2'  in strInputFile :
-                if 'ORU^R01^ORU_R01' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.19"
+            if '2.1^CISIS_CDA_HL7_V2'  in str_input_file :
+                if 'ORU^R01^ORU_R01' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.19"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.61"
-                if 'MDM^T02^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.24"
+                if 'MDM^T02^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.24"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.19"
-                if 'MDM^T04^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.25"
+                if 'MDM^T04^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.25"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.58"
-                if 'MDM^T10^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.21"
+                if 'MDM^T10^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.21"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.60"
         
-            elif '1.1^CISIS_CDA_HL7_LPS'  in strInputFile :
-                if 'MDM^T02^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.20"
+            elif '1.1^CISIS_CDA_HL7_LPS'  in str_input_file :
+                if 'MDM^T02^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.20"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.65"
-                if 'MDM^T04^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.22"
+                if 'MDM^T04^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.22"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.66"
-                if 'MDM^T10^MDM_T02' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.23"
-                    #validationValidator = "2.16.840.1.113883.2.8.3.1.67"
+                if 'MDM^T10^MDM_T02' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.23"
+                    
 
-            elif 'ACK^'  in strInputFile :
-                if '2.6' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.27"
+            elif 'ACK^'  in str_input_file :
+                if '2.6' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.27"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.77"
-                if '2.5' in strInputFile :
-                    validationValidator = "1.3.6.1.4.1.12559.11.36.8.3.26"
+                if '2.5' in str_input_file :
+                    validation_validator = "1.3.6.1.4.1.12559.11.36.8.3.26"
                     #validationValidator = "2.16.840.1.113883.2.8.3.1.69"
 
 
-            elif '2.11-PAM'  in strInputFile :
-                    validationValidator = "2.16.840.1.113883.2.8.3.1.1"
-    if ((validationService == "") or (validationValidator == "")) :
+            elif '2.11-PAM'  in str_input_file :
+                    validation_validator = "2.16.840.1.113883.2.8.3.1.1"
+    if ((validation_service == "") or (validation_validator == "")) :
          raise NoValidateurException
-    return validationService, validationValidator
+    return validation_service, validation_validator
   
 
 
@@ -198,20 +198,20 @@ for p in glob.iglob(dir_path_exemple+'/**/*.*', recursive=True):
                 transformReport(rapport, github_action_path, file_output, p, timeValidation)
                 print("- Location report "  + locationRepport)
             except NoValidateurException as e:
-                print("	 <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Pas de validateur trouvé  </td> <td></td> <td></td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Pas validateur")  
             except ValidateException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la validation </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la validation")            
             except GetReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la recuperation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la récuperation du rapport")          
             except TransformReportException as e:
-                print("	 <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur à la transformation du rapport </td> <td></td> <td> " + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur à la transformation  du rapport")          
             except Exception as e:
                 print(e)
-                print("	 <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
+                print("  <tr><td>" + p  + "</td><td> Erreur  </td> <td></td> <td>" + locationRepport +" </td> <td></td> <td></td> <td></td>  </tr>" ,file=open(file_output, "a"))    
                 print("- Erreur   : " + p)     
 
 
